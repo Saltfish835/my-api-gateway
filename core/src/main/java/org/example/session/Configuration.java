@@ -4,6 +4,9 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.rpc.service.GenericService;
+import org.example.datasource.Connection;
+import org.example.executor.Executor;
+import org.example.executor.SimpleExecutor;
 import org.example.mapping.HttpStatement;
 
 import java.util.HashMap;
@@ -72,5 +75,9 @@ public class Configuration {
 
     public HttpStatement getHttpStatement(String uri) {
         return httpStatementMap.get(uri);
+    }
+
+    public Executor newExecutor(Connection connection) {
+        return new SimpleExecutor(this, connection);
     }
 }

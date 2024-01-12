@@ -11,7 +11,6 @@ public class SimpleExecutor extends BaseExecutor{
 
     @Override
     protected Object doExec(String methodName, String[] parameterTypes, Object[] args) {
-        final Object data = connection.execute(methodName, parameterTypes, new String[]{"ignore"}, args);
-        return data;
+        return connection.execute(methodName, parameterTypes, new String[]{"ignore"}, args);
     }
 }
