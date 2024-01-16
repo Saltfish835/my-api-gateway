@@ -4,6 +4,10 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.rpc.service.GenericService;
+import org.example.authorization.IAuth;
+import org.example.authorization.service.AuthService;
+import org.example.bind.IGenericReference;
+import org.example.bind.MapperRegistry;
 import org.example.datasource.Connection;
 import org.example.executor.Executor;
 import org.example.executor.SimpleExecutor;
@@ -13,6 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Configuration {
+
+    /**
+     * netty配置
+     */
+    private String hostName = "127777.0.0.1";
+    private int port = 7739;
+    private int bossNThreads = 1;
+    private int workNThreads = 4;
+
 
     /**
      * 泛化服务配置
@@ -25,6 +38,16 @@ public class Configuration {
      * uri --> httpStatement
      */
     private final Map<String, HttpStatement> httpStatementMap = new HashMap<>();
+
+    /**
+     * 注册uri --> mapper
+     */
+    private final MapperRegistry mapperRegistry = new MapperRegistry(this);
+
+    /**
+     * 授权服务
+     */
+    private final IAuth auth = new AuthService();
 
     /**
      * 注册泛化调用所需要的配置
@@ -79,5 +102,49 @@ public class Configuration {
 
     public Executor newExecutor(Connection connection) {
         return new SimpleExecutor(this, connection);
+    }
+
+    public void addMapper(HttpStatement httpStatement) {
+        mapperRegistry.addMapper(httpStatement);
+    }
+
+    public IGenericReference getMapper(String uri, GatewaySession gatewaySession) {
+        return mapperRegistry.getMapper(uri, gatewaySession);
+    }
+
+    public boolean authValidate(String uId, String token) {
+        return auth.validate(uId,token);
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getBossNThreads() {
+        return bossNThreads;
+    }
+
+    public void setBossNThreads(int bossNThreads) {
+        this.bossNThreads = bossNThreads;
+    }
+
+    public int getWorkNThreads() {
+        return workNThreads;
+    }
+
+    public void setWorkNThreads(int workNThreads) {
+        this.workNThreads = workNThreads;
     }
 }

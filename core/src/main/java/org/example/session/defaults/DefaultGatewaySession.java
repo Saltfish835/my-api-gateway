@@ -1,5 +1,6 @@
 package org.example.session.defaults;
 
+import org.example.bind.IGenericReference;
 import org.example.executor.Executor;
 import org.example.mapping.HttpStatement;
 import org.example.session.Configuration;
@@ -38,5 +39,10 @@ public class DefaultGatewaySession implements GatewaySession {
     @Override
     public Configuration getConfiguration() {
         return null;
+    }
+
+    @Override
+    public IGenericReference getMapper() {
+        return configuration.getMapper(uri,this);
     }
 }

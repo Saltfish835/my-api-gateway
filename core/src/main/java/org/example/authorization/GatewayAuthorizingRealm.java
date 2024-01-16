@@ -28,7 +28,7 @@ public class GatewayAuthorizingRealm extends AuthorizingRealm {
             final String jwtToken = ((GatewayAuthorizingToken) authenticationToken).getJwt();
             final Claims claims = JwtUtil.decode(jwtToken);
             // 当前用户是否是token中记录的用户
-            if(authenticationToken.getPrincipal().equals(claims.getSubject())) {
+            if(!authenticationToken.getPrincipal().equals(claims.getSubject())) {
                 throw new AuthenticationException("无效令牌");
             }
         }catch (Exception e) {
