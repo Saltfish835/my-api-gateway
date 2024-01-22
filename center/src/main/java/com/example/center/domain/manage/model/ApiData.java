@@ -1,4 +1,4 @@
-package com.example.center.domain.model;
+package com.example.center.domain.manage.model;
 
 public class ApiData {
 

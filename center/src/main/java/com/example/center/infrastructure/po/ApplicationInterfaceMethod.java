@@ -2,20 +2,17 @@ package com.example.center.infrastructure.po;
 
 import java.util.Date;
 
-public class HttpStatement {
+public class ApplicationInterfaceMethod {
 
     private Integer id;
-
-    private String uri;
-    private String httpCommandType;
-
-    private String application;
-    private String interfaceName;
+    private String systemId;
+    private String interfaceId;
+    private String methodId;
     private String methodName;
     private String parameterType;
-
+    private String uri;
+    private String httpCommandType;
     private Integer auth;
-
     private Date createTime;
     private Date updateTime;
 
@@ -27,28 +24,28 @@ public class HttpStatement {
         this.id = id;
     }
 
-    public String getUri() {
-        return uri;
+    public String getSystemId() {
+        return systemId;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
     }
 
-    public String getHttpCommandType() {
-        return httpCommandType;
+    public String getInterfaceId() {
+        return interfaceId;
     }
 
-    public void setHttpCommandType(String httpCommandType) {
-        this.httpCommandType = httpCommandType;
+    public void setInterfaceId(String interfaceId) {
+        this.interfaceId = interfaceId;
     }
 
-    public String getApplication() {
-        return application;
+    public String getMethodId() {
+        return methodId;
     }
 
-    public void setApplication(String application) {
-        this.application = application;
+    public void setMethodId(String methodId) {
+        this.methodId = methodId;
     }
 
     public String getMethodName() {
@@ -65,6 +62,22 @@ public class HttpStatement {
 
     public void setParameterType(String parameterType) {
         this.parameterType = parameterType;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getHttpCommandType() {
+        return httpCommandType;
+    }
+
+    public void setHttpCommandType(String httpCommandType) {
+        this.httpCommandType = httpCommandType;
     }
 
     public Integer getAuth() {
@@ -89,13 +102,5 @@ public class HttpStatement {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getInterfaceName() {
-        return interfaceName;
-    }
-
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
     }
 }
