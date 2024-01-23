@@ -1,8 +1,6 @@
 package com.example.center.interfaces;
 
 import com.example.center.application.IConfigManageService;
-import com.example.center.domain.manage.model.ApiData;
-import com.example.center.domain.manage.model.vo.GatewayServerDetailVO;
 import com.example.center.domain.manage.model.vo.GatewayServerVO;
 import com.example.center.infrastructure.common.ResponseCode;
 import com.example.center.infrastructure.common.Result;

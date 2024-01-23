@@ -1,6 +1,5 @@
 package com.example.center.domain.manage.repository;
 
-import com.example.center.domain.manage.model.ApiData;
 import com.example.center.domain.manage.model.vo.GatewayServerDetailVO;
 import com.example.center.domain.manage.model.vo.GatewayServerVO;
 
