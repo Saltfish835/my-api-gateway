@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("wg/admin/config")
+@RequestMapping("/wg/admin/config")
 public class GatewayConfigManage {
 
     private Logger logger = LoggerFactory.getLogger(GatewayConfigManage.class);
@@ -21,7 +21,7 @@ public class GatewayConfigManage {
     private IConfigManageService configManageService;
 
 
-    @GetMapping(value="queryServerConofig", produces = "application/json;charset=utf-8")
+    @GetMapping(value="queryServerConfig", produces = "application/json;charset=utf-8")
     public Result<List<GatewayServerVO>> queryServerConfig() {
         try{
             logger.info("查询服务网关配置项信息");
