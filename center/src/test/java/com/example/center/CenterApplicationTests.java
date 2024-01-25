@@ -3,6 +3,7 @@ package com.example.center;
 import com.alibaba.fastjson.JSON;
 import com.example.center.application.IConfigManageService;
 import com.example.center.application.IRegisterManageService;
+import com.example.center.domain.manage.model.aggregates.ApplicationSystemRichInfo;
 import com.example.center.domain.manage.model.vo.GatewayServerVO;
 import com.example.center.domain.register.model.vo.ApplicationInterfaceMethodVO;
 import com.example.center.domain.register.model.vo.ApplicationInterfaceVO;
@@ -84,6 +85,12 @@ class CenterApplicationTests {
         applicationInterfaceVO02.setHttpCommandType("POST");
         applicationInterfaceVO02.setAuth(1);
         registerManageService.registerApplicationInterfaceMethod(applicationInterfaceVO02);
+    }
+
+    @Test
+    public void test_queryApplicationSystemRichInfo(){
+        ApplicationSystemRichInfo result = configManageService.queryApplicationSystemRichInfo("api-gateway-g4");
+        logger.info("测试结果：{}", JSON.toJSONString(result));
     }
 
 }

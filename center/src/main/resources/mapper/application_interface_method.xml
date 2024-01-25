@@ -21,5 +21,10 @@
         values(#{systemId}, #{interfaceId}, #{methodId}, #{methodName}, #{parameterType}, #{uri}, #{httpCommandType}, #{auth}, NOW(), NOW());
     </insert>
 
+    <select id="queryApplicationInterfaceMethodList" parameterType="com.example.center.infrastructure.po.ApplicationInterfaceMethod" resultMap="applicationInterfaceMethodMap">
+        select id, system_id, interface_id, method_id, method_name, parameter_type, uri, http_command_type, auth
+        from application_interface_method
+        where system_id = #{systemId} and interface_id = #{interfaceId};
+    </select>
 
 </mapper>

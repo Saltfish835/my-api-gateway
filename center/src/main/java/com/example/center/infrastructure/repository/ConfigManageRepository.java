@@ -1,12 +1,9 @@
 package com.example.center.infrastructure.repository;
 
-import com.example.center.domain.manage.model.vo.GatewayServerDetailVO;
-import com.example.center.domain.manage.model.vo.GatewayServerVO;
+import com.example.center.domain.manage.model.vo.*;
 import com.example.center.domain.manage.repository.IConfigManageRepository;
-import com.example.center.infrastructure.dao.IGatewayServerDao;
-import com.example.center.infrastructure.dao.IGatewayServerDetailDao;
-import com.example.center.infrastructure.po.GatewayServer;
-import com.example.center.infrastructure.po.GatewayServerDetail;
+import com.example.center.infrastructure.dao.*;
+import com.example.center.infrastructure.po.*;
 import org.springframework.stereotype.Component;
 
 
@@ -22,6 +19,18 @@ public class ConfigManageRepository implements IConfigManageRepository {
 
     @Resource
     private IGatewayServerDetailDao gatewayServerDetailDao;
+
+    @Resource
+    private IGatewayDistributionDao gatewayDistributionDao;
+
+    @Resource
+    private IApplicationSystemDao applicationSystemDao;
+
+    @Resource
+    private IApplicationInterfaceDao applicationInterfaceDao;
+
+    @Resource
+    private IApplicationInterfaceMethodDao applicationInterfaceMethodDao;
 
 
     @Override
@@ -73,5 +82,61 @@ public class ConfigManageRepository implements IConfigManageRepository {
         gatewayServerDetail.setGatewayAddress(gatewayAddress);
         gatewayServerDetail.setStatus(available);
         return gatewayServerDetailDao.updateGatewayStatus(gatewayServerDetail);
+    }
+
+    @Override
+    public List<String> queryGatewayDistributionSystemIdList(String gatewayId) {
+        return gatewayDistributionDao.queryGatewayDistributionSystemIdList();
+    }
+
+    @Override
+    public List<ApplicationSystemVO> queryApplicationSystemList(List<String> systemIdList) {
+        final List<ApplicationSystem> applicationSystemList = applicationSystemDao.queryApplicationSystemList(systemIdList);
+        final ArrayList<ApplicationSystemVO> applicationSystemVOList = new ArrayList<>(applicationSystemList.size());
+        for(ApplicationSystem applicationSystem : applicationSystemList) {
+            final ApplicationSystemVO applicationSystemVO = new ApplicationSystemVO();
+            applicationSystemVO.setSystemId(applicationSystem.getSystemId());
+            applicationSystemVO.setSystemName(applicationSystem.getSystemName());
+            applicationSystemVO.setSystemType(applicationSystem.getSystemType());
+            applicationSystemVO.setSystemRegistry(applicationSystem.getSystemRegistry());
+            applicationSystemVOList.add(applicationSystemVO);
+        }
+        return applicationSystemVOList;
+    }
+
+    @Override
+    public List<ApplicationInterfaceVO> queryApplicationInterfaceLis(String systemId) {
+        final List<ApplicationInterface> applicationInterfaceList = applicationInterfaceDao.queryApplicationInterfaceList(systemId);
+        List<ApplicationInterfaceVO> applicationInterfaceVOList = new ArrayList<>(applicationInterfaceList.size());
+        for(ApplicationInterface applicationInterface : applicationInterfaceList) {
+            final ApplicationInterfaceVO applicationInterfaceVO = new ApplicationInterfaceVO();
+            applicationInterfaceVO.setSystemId(applicationInterface.getSystemId());
+            applicationInterfaceVO.setInterfaceId(applicationInterface.getInterfaceId());
+            applicationInterfaceVO.setInterfaceName(applicationInterface.getInterfaceName());
+            applicationInterfaceVO.setInterfaceVersion(applicationInterface.getInterfaceVersion());
+            applicationInterfaceVOList.add(applicationInterfaceVO);
+        }
+        return applicationInterfaceVOList;
+    }
+
+    @Override
+    public List<ApplicationInterfaceMethodVO> queryApplicationInterfaceMethodList(String systemId, String interfaceId) {
+        final ApplicationInterfaceMethod req = new ApplicationInterfaceMethod();
+        req.setSystemId(systemId);
+        req.setInterfaceId(interfaceId);
+        final List<ApplicationInterfaceMethod> applicationInterfaceMethodList = applicationInterfaceMethodDao.queryApplicationInterfaceMethodList(req);
+        List<ApplicationInterfaceMethodVO> applicationInterfaceMethodVOList = new ArrayList<>(applicationInterfaceMethodList.size());
+        for(ApplicationInterfaceMethod applicationInterfaceMethod : applicationInterfaceMethodList) {
+            final ApplicationInterfaceMethodVO applicationInterfaceMethodVO = new ApplicationInterfaceMethodVO();
+            applicationInterfaceMethodVO.setSystemId(applicationInterfaceMethod.getSystemId());
+            applicationInterfaceMethodVO.setInterfaceId(applicationInterfaceMethod.getInterfaceId());
+            applicationInterfaceMethodVO.setMethodName(applicationInterfaceMethod.getMethodName());
+            applicationInterfaceMethodVO.setParameterType(applicationInterfaceMethod.getParameterType());
+            applicationInterfaceMethodVO.setUri(applicationInterfaceMethod.getUri());
+            applicationInterfaceMethodVO.setHttpCommandType(applicationInterfaceMethod.getHttpCommandType());
+            applicationInterfaceMethodVO.setAuth(applicationInterfaceMethod.getAuth());
+            applicationInterfaceMethodVOList.add(applicationInterfaceMethodVO);
+        }
+        return applicationInterfaceMethodVOList;
     }
 }

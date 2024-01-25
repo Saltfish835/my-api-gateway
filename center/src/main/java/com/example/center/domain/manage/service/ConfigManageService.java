@@ -1,8 +1,8 @@
 package com.example.center.domain.manage.service;
 
 import com.example.center.application.IConfigManageService;
-import com.example.center.domain.manage.model.vo.GatewayServerDetailVO;
-import com.example.center.domain.manage.model.vo.GatewayServerVO;
+import com.example.center.domain.manage.model.aggregates.ApplicationSystemRichInfo;
+import com.example.center.domain.manage.model.vo.*;
 import com.example.center.domain.manage.repository.IConfigManageRepository;
 import com.example.center.infrastructure.common.Constants;
 import org.springframework.dao.DuplicateKeyException;
@@ -34,5 +34,23 @@ public class ConfigManageService implements IConfigManageService {
         }else {
             return configManageRepository.updateGatewayStatus(gatewayId,gatewayAddress,Constants.GatewayStatus.Available);
         }
+    }
+
+    @Override
+    public ApplicationSystemRichInfo queryApplicationSystemRichInfo(String gatewayId) {
+        final List<String> systemIdList = configManageRepository.queryGatewayDistributionSystemIdList(gatewayId);
+        if(systemIdList == null || systemIdList.isEmpty()) {
+            return null;
+        }
+        final List<ApplicationSystemVO> applicationSystemVOList = configManageRepository.queryApplicationSystemList(systemIdList);
+        for(ApplicationSystemVO applicationSystemVO : applicationSystemVOList) {
+            final List<ApplicationInterfaceVO> applicationInterfaceVOList = configManageRepository.queryApplicationInterfaceLis(applicationSystemVO.getSystemId());
+            for(ApplicationInterfaceVO applicationInterfaceVO : applicationInterfaceVOList) {
+                final List<ApplicationInterfaceMethodVO> applicationInterfaceMethodVOList = configManageRepository.queryApplicationInterfaceMethodList(applicationInterfaceVO.getSystemId(), applicationInterfaceVO.getInterfaceId());
+                applicationInterfaceVO.setMethodList(applicationInterfaceMethodVOList);
+            }
+            applicationSystemVO.setInterfaceList(applicationSystemVOList);
+        }
+        return new ApplicationSystemRichInfo(gatewayId, applicationSystemVOList);
     }
 }
