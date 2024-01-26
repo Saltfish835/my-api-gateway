@@ -1,17 +1,17 @@
 package com.example.assist.application;
 
 import com.example.assist.config.GatewayServiceProperties;
-import com.example.assist.service.RegisterGatewayService;
+import com.example.assist.domain.service.GatewayCenterService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 public class GatewayApplication implements ApplicationListener<ContextRefreshedEvent> {
 
     private GatewayServiceProperties properties;
-    private RegisterGatewayService registerGatewayService;
+    private GatewayCenterService registerGatewayService;
 
 
-    public GatewayApplication(GatewayServiceProperties properties, RegisterGatewayService registerGatewayService) {
+    public GatewayApplication(GatewayServiceProperties properties, GatewayCenterService registerGatewayService) {
         this.properties = properties;
         this.registerGatewayService = registerGatewayService;
     }
@@ -26,5 +26,7 @@ public class GatewayApplication implements ApplicationListener<ContextRefreshedE
         // 注册网关服务
         registerGatewayService.doRegister(properties.getAddress(), properties.getGroupId(), properties.getGatewayId(),
                 properties.getGatewayName(), properties.getGatewayAddress());
+        // 拉去网关配置
+
     }
 }

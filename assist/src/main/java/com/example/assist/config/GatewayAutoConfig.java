@@ -1,7 +1,7 @@
 package com.example.assist.config;
 
 import com.example.assist.application.GatewayApplication;
-import com.example.assist.service.RegisterGatewayService;
+import com.example.assist.domain.service.GatewayCenterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,12 +15,12 @@ public class GatewayAutoConfig {
     private Logger logger = LoggerFactory.getLogger(GatewayAutoConfig.class);
 
     @Bean
-    public RegisterGatewayService registerGatewayService() {
-        return new RegisterGatewayService();
+    public GatewayCenterService registerGatewayService() {
+        return new GatewayCenterService();
     }
 
     @Bean
-    public GatewayApplication gatewayApplication(GatewayServiceProperties properties, RegisterGatewayService registerGatewayService) {
+    public GatewayApplication gatewayApplication(GatewayServiceProperties properties, GatewayCenterService registerGatewayService) {
         return new GatewayApplication(properties,registerGatewayService);
     }
 }

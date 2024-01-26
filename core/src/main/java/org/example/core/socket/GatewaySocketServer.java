@@ -47,6 +47,7 @@ public class GatewaySocketServer implements Callable<Channel> {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childHandler(new GatewayChannelInitializer(configuration, gatewaySessionFactory));
             channelFuture = bootstrap.bind(configuration.getPort()).syncUninterruptibly();
+            this.channel = channelFuture.channel();
         }catch (Exception e) {
             logger.error("socket server start error.", e);
         }finally {
