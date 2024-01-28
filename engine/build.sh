@@ -1,0 +1,1 @@
+docker build -f ./Dockerfile -t my-api-gateway-engine:1.0.1 .

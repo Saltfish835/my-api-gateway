@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.center.infrastructure.dao.IApplicationSystemDao">
+<mapper namespace="com.example.gateway.center.infrastructure.dao.IApplicationSystemDao">
 
 
-    <resultMap id="applicationSystemMap" type="com.example.center.infrastructure.po.ApplicationSystem">
+    <resultMap id="applicationSystemMap" type="com.example.gateway.center.infrastructure.po.ApplicationSystem">
         <id column="id" property="id"/>
         <id column="system_id" property="systemId"/>
         <id column="system_name" property="systemName"/>
@@ -13,7 +13,7 @@
         <id column="update_time" property="updateTime"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.example.center.infrastructure.po.ApplicationSystem">
+    <insert id="insert" parameterType="com.example.gateway.center.infrastructure.po.ApplicationSystem">
         insert into application_system(system_id, system_name, system_type, system_registry, create_time, update_time)
         values(#{systemId}, #{systemName}, #{systemType}, #{systemRegistry}, NOW(), NOW());
     </insert>

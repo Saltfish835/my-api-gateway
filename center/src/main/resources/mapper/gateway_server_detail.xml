@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.center.infrastructure.dao.IGatewayServerDetailDao">
+<mapper namespace="com.example.gateway.center.infrastructure.dao.IGatewayServerDetailDao">
 
-    <resultMap id="gatewayServerDetailMap" type="com.example.center.infrastructure.po.GatewayServerDetail">
+    <resultMap id="gatewayServerDetailMap" type="com.example.gateway.center.infrastructure.po.GatewayServerDetail">
         <id column="id" property="id"/>
         <id column="group_id" property="group_id"/>
         <id column="gateway_id" property="gatewayId"/>
@@ -13,7 +13,7 @@
         <id column="update_time" property="updateTime"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.example.center.infrastructure.po.GatewayServerDetail">
+    <insert id="insert" parameterType="com.example.gateway.center.infrastructure.po.GatewayServerDetail">
         insert into gateway_server_detail(group_id, gateway_id, gateway_name, gateway_address, status, create_time, update_time)
         value(#{groupId}, #{gatewayId}, #{gatewayName}, #{gatewayAddress}, #{status}, NOW(), NOW());
     </insert>
@@ -24,7 +24,7 @@
         where gateway_id = #{gatewayId} AND gateway_address = #{gatewayAddress};
     </select>
 
-    <update id="updateGatewayStatus" parameterType="com.example.center.infrastructure.po.GatewayServerDetail">
+    <update id="updateGatewayStatus" parameterType="com.example.gateway.center.infrastructure.po.GatewayServerDetail">
         update gateway_server_detail
         set status = #{status}
         where gateway_id = #{gatewayId} AND gateway_address = #{gatewayAddress};

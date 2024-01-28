@@ -1,0 +1,1 @@
+docker build -f ./Dockerfile -t my-api-gateway-center:1.0.0 .
