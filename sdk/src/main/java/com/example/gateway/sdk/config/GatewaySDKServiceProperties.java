@@ -11,6 +11,10 @@ public class GatewaySDKServiceProperties {
     private String systemName;
     private String systemRegistry;
 
+    private int timeout;
+    private int interval;
+    private int retry;
+
     public String getAddress() {
         return address;
     }
@@ -41,5 +45,29 @@ public class GatewaySDKServiceProperties {
 
     public void setSystemRegistry(String systemRegistry) {
         this.systemRegistry = systemRegistry;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+    public int getRetry() {
+        return retry;
+    }
+
+    public void setRetry(int retry) {
+        this.retry = retry;
     }
 }
