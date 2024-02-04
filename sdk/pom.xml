@@ -81,7 +81,7 @@
     </dependencies>
 
     <build>
-        <finalName>api-gateway-sdk</finalName>
+        <finalName>my-api-gateway-sdk</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

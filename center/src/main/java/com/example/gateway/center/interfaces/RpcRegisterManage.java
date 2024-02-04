@@ -1,5 +1,7 @@
 package com.example.gateway.center.interfaces;
 
+import com.example.gateway.center.application.IConfigManageService;
+import com.example.gateway.center.application.IMessageService;
 import com.example.gateway.center.application.IRegisterManageService;
 import com.example.gateway.center.domain.register.model.vo.ApplicationInterfaceMethodVO;
 import com.example.gateway.center.domain.register.model.vo.ApplicationInterfaceVO;
@@ -24,6 +26,12 @@ public class RpcRegisterManage {
 
     @Resource
     private IRegisterManageService registerManageService;
+
+    @Resource
+    private IConfigManageService configManageService;
+
+    @Resource
+    private IMessageService messageService;
 
     @PostMapping(value = "registerApplication", produces = "application/json;charset=utf-8")
     public Result<Boolean> registerApplication(@RequestParam String systemId, @RequestParam String systemName,
@@ -92,6 +100,20 @@ public class RpcRegisterManage {
             return new Result<>(ResponseCode.INDEX_DUP.getCode(), e.getMessage(), true);
         }catch (Exception e) {
             logger.error("注册应用接口方法失败 systemId: {}", systemId, e);
+            return new Result<>(ResponseCode.UN_ERROR.getCode(), e.getMessage(), false);
+        }
+    }
+
+
+    @PostMapping(value = "registerEvent", produces = "application/json;charset=utf-8")
+    public Result<Boolean> registerEvent(@RequestParam String systemId) {
+        try{
+            logger.info("应用信息注册完成通知 systemId: {}", systemId);
+            final String distribution = configManageService.queryGatewayDistribution(systemId);
+            messageService.pushMessage(distribution, systemId);
+            return new Result<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getInfo(), true);
+        }catch (Exception e) {
+            logger.error("应用信息注册失败 systemId: {}", systemId, e);
             return new Result<>(ResponseCode.UN_ERROR.getCode(), e.getMessage(), false);
         }
     }

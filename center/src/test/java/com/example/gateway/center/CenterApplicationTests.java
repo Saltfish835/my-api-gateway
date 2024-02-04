@@ -89,7 +89,7 @@ class CenterApplicationTests {
 
     @Test
     public void test_queryApplicationSystemRichInfo(){
-        ApplicationSystemRichInfo result = configManageService.queryApplicationSystemRichInfo("api-gateway-g4");
+        ApplicationSystemRichInfo result = configManageService.queryApplicationSystemRichInfo("api-gateway-g4","api-gateway-test-provider");
         logger.info("测试结果：{}", JSON.toJSONString(result));
     }
 

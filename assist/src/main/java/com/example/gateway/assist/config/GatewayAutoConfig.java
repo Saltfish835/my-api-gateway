@@ -11,7 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import redis.clients.jedis.JedisPoolConfig;
 
+import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,6 +31,41 @@ import java.util.concurrent.Future;
 public class GatewayAutoConfig {
 
     private Logger logger = LoggerFactory.getLogger(GatewayAutoConfig.class);
+
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory(GatewayServiceProperties properties, GatewayCenterService centerService) {
+        final Map<String, String> redisConfig = centerService.queryRedisConfig(properties.getAddress());
+        final RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(redisConfig.get("host"));
+        redisStandaloneConfiguration.setPort(Integer.parseInt(redisConfig.get("port")));
+        final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(100);
+        jedisPoolConfig.setMaxWaitMillis(30 * 10000);
+        jedisPoolConfig.setMinIdle(20);
+        jedisPoolConfig.setMaxIdle(40);
+        jedisPoolConfig.setTestWhileIdle(true);
+        final JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().connectTimeout(Duration.ofSeconds(2))
+                .clientName("api-gateway-assist-redis-" + properties.getGatewayId())
+                .usePooling().poolConfig(jedisPoolConfig).build();
+        return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
+    }
+
+
+    @Bean
+    public RedisMessageListenerContainer container(GatewayServiceProperties properties, RedisConnectionFactory redisConnectionFactory, MessageListenerAdapter messageListenerAdapter) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory);
+        container.addMessageListener(messageListenerAdapter, new PatternTopic(properties.getGatewayId()));
+        return container;
+    }
+
+
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter(GatewayApplication gatewayApplication) {
+        return new MessageListenerAdapter(gatewayApplication, "receiveMessage");
+    }
+
 
     @Bean
     public GatewayCenterService registerGatewayService() {

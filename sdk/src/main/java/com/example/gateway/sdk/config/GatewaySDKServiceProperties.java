@@ -11,9 +11,9 @@ public class GatewaySDKServiceProperties {
     private String systemName;
     private String systemRegistry;
 
-    private int timeout;
-    private int interval;
-    private int retry;
+    private int timeout = 10 * 1000;
+    private int interval = 10* 1000;
+    private int retry = 5;
 
     public String getAddress() {
         return address;

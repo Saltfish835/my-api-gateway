@@ -9,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,20 +38,28 @@ public class ConfigManageService implements IConfigManageService {
     }
 
     @Override
-    public ApplicationSystemRichInfo queryApplicationSystemRichInfo(String gatewayId) {
-        final List<String> systemIdList = configManageRepository.queryGatewayDistributionSystemIdList(gatewayId);
-        if(systemIdList == null || systemIdList.isEmpty()) {
-            return null;
+    public ApplicationSystemRichInfo queryApplicationSystemRichInfo(String gatewayId, String systemId) {
+        List<String> systemIdList = new ArrayList<>();
+        if(systemId == null) {
+            systemIdList = configManageRepository.queryGatewayDistributionSystemIdList(gatewayId);
+        }else {
+            systemIdList.add(systemId);
         }
         final List<ApplicationSystemVO> applicationSystemVOList = configManageRepository.queryApplicationSystemList(systemIdList);
         for(ApplicationSystemVO applicationSystemVO : applicationSystemVOList) {
             final List<ApplicationInterfaceVO> applicationInterfaceVOList = configManageRepository.queryApplicationInterfaceLis(applicationSystemVO.getSystemId());
             for(ApplicationInterfaceVO applicationInterfaceVO : applicationInterfaceVOList) {
-                final List<ApplicationInterfaceMethodVO> applicationInterfaceMethodVOList = configManageRepository.queryApplicationInterfaceMethodList(applicationInterfaceVO.getSystemId(), applicationInterfaceVO.getInterfaceId());
+                final List<ApplicationInterfaceMethodVO> applicationInterfaceMethodVOList = configManageRepository.queryApplicationInterfaceMethodList(
+                        applicationSystemVO.getSystemId(), applicationInterfaceVO.getInterfaceId());
                 applicationInterfaceVO.setMethodVOList(applicationInterfaceMethodVOList);
             }
             applicationSystemVO.setInterfaceVOList(applicationInterfaceVOList);
         }
         return new ApplicationSystemRichInfo(gatewayId, applicationSystemVOList);
+    }
+
+    @Override
+    public String queryGatewayDistribution(String systemId) {
+        return configManageRepository.queryGatewayDistribution(systemId);
     }
 }

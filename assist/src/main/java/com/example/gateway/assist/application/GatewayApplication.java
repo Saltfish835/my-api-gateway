@@ -45,31 +45,42 @@ public class GatewayApplication implements ApplicationContextAware, ApplicationL
             gatewayCenterService.doRegister(properties.getAddress(), properties.getGroupId(), properties.getGatewayId(),
                     properties.getGatewayName(), properties.getGatewayAddress());
             // 拉去网关配置
-            final ApplicationSystemRichInfo applicationSystemRichInfo = gatewayCenterService.pullApplicationSystemRichInfo(properties.getAddress(), properties.getGatewayId());
-            final List<ApplicationSystemVO> applicationSystemVOList = applicationSystemRichInfo.getApplicationSystemVOList();
-            for(ApplicationSystemVO applicationSystemVO : applicationSystemVOList) {
-                final List<ApplicationInterfaceVO> interfaceVOList = applicationSystemVO.getInterfaceVOList();
-                for(ApplicationInterfaceVO applicationInterfaceVO : interfaceVOList) {
-                    configuration.registryConfig(applicationSystemVO.getSystemId(), applicationSystemVO.getSystemRegistry(), applicationInterfaceVO.getInterfaceId(), applicationInterfaceVO.getInterfaceVersion());
-                    final List<ApplicationInterfaceMethodVO> methodVOList = applicationInterfaceVO.getMethodVOList();
-                    for(ApplicationInterfaceMethodVO methodVO : methodVOList) {
-                        final HttpStatement httpStatement = new HttpStatement(methodVO.getUri(),
-                                HttpCommandType.valueOf(methodVO.getHttpCommandType()),
-                                applicationSystemVO.getSystemId(),
-                                applicationInterfaceVO.getInterfaceId(),
-                                methodVO.getMethodId(),
-                                methodVO.getParameterType(),
-                                methodVO.isAuth());
-                        configuration.addMapper(httpStatement);
-                        logger.info("网关服务注册映射 系统: {}, 接口: {}, 方法: {}", applicationSystemVO.getSystemId(),applicationInterfaceVO.getInterfaceId(), methodVO.getMethodId());
-                    }
-                }
-            }
+            addMappers("");
         }catch (Exception e) {
             logger.error("网关服务启动失败, 停止服务, {}", e.getMessage(), e);
             throw e;
         }
     }
+
+
+    public void addMappers(String systemId) {
+        final ApplicationSystemRichInfo systemRichInfo = gatewayCenterService.pullApplicationSystemRichInfo(properties.getAddress(), properties.getGatewayId(), systemId);
+        final List<ApplicationSystemVO> applicationSystemVOList = systemRichInfo.getApplicationSystemVOList();
+        if(applicationSystemVOList.isEmpty()) {
+            logger.warn("网关{}服务注册映射为空，请排查gatewayCenterService.pullApplicationSystemRichInfo是否检索到次网关算力需要拉取的配置数据", systemId);
+            return;
+        }
+        for(ApplicationSystemVO systemVO: applicationSystemVOList) {
+            final List<ApplicationInterfaceVO> interfaceVOList = systemVO.getInterfaceVOList();
+            for(ApplicationInterfaceVO interfaceVO : interfaceVOList) {
+                configuration.registryConfig(systemVO.getSystemId(), systemVO.getSystemRegistry(), interfaceVO.getInterfaceId(), interfaceVO.getInterfaceVersion());
+                final List<ApplicationInterfaceMethodVO> methodVOList = interfaceVO.getMethodVOList();
+                for(ApplicationInterfaceMethodVO methodVO : methodVOList) {
+                    final HttpStatement httpStatement = new HttpStatement(methodVO.getUri(),
+                            HttpCommandType.valueOf(methodVO.getHttpCommandType()),
+                            systemVO.getSystemId(),
+                            interfaceVO.getInterfaceId(),
+                            methodVO.getMethodId(),
+                            methodVO.getParameterType(),
+                            methodVO.isAuth());
+                    configuration.addMapper(httpStatement);
+                    logger.info("网关服务注册映射 系统: {}, 接口: {}, 方法: {}", systemVO.getSystemId(), interfaceVO.getInterfaceId(), methodVO.getMethodId());
+                }
+            }
+        }
+
+    }
+
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
@@ -81,5 +92,11 @@ public class GatewayApplication implements ApplicationContextAware, ApplicationL
         }catch (Exception e) {
             logger.error("IoC容器关闭, API网关关闭失败", e);
         }
+    }
+
+
+    public void receiveMessage(Object message) {
+        logger.info("【事件通知】接收注册中心推送消息 message: {}", message);
+        addMappers(message.toString().substring(1, message.toString().length() - 1));
     }
 }
