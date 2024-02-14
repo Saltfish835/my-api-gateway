@@ -24,7 +24,40 @@
     <select id="queryApplicationInterfaceMethodList" parameterType="com.example.gateway.center.infrastructure.po.ApplicationInterfaceMethod" resultMap="applicationInterfaceMethodMap">
         select id, system_id, interface_id, method_id, method_name, parameter_type, uri, http_command_type, auth
         from application_interface_method
-        where system_id = #{systemId} and interface_id = #{interfaceId};
+        <where>
+            <if test="systemId != null">
+                and system_id = #{systemId}
+            </if>
+            <if test="interfaceId != null">
+                and interface_id = #{interfaceId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryApplicationInterfaceMethodListByPage" parameterType="com.example.gateway.center.infrastructure.common.OperationRequest" resultMap="applicationInterfaceMethodMap">
+        select id, system_id, interface_id, method_id, method_name, parameter_type, uri, http_command_type, auth
+        from application_interface_method
+        <where>
+            <if test="data != null and data.systemId != ''">
+                and system_id = #{data.systemId}
+            </if>
+            <if test="data != null and data.interfaceId != ''">
+                and interface_id = #{data.interfaceId}
+            </if>
+        </where>
+        order by id desc limit #{pageStart}, #{pageEnd}
+    </select>
+
+    <select id="queryApplicationInterfaceMethodListCountByPage" parameterType="com.example.gateway.center.infrastructure.common.OperationRequest" resultType="java.lang.Integer">
+        select count(id) from application_interface_method
+        <where>
+            <if test="data != null and data.systemId != ''">
+                and system_id = #{data.systemId}
+            </if>
+            <if test="data != null and data.interfaceId != ''">
+                and interface_id = #{data.interfaceId}
+            </if>
+        </where>
     </select>
 
 </mapper>

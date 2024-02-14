@@ -20,4 +20,36 @@
         select gateway_id from gateway_distribution where system_id = #{systemId}
     </select>
 
+    <select id="queryGatewayDistributionList" resultMap="gatewayDistributionMap">
+        select id, group_id, gateway_id, system_id, system_name, create_time, update_time
+        from gateway_distribution
+    </select>
+
+    <select id="queryGatewayDistributionListByPage" parameterType="com.example.gateway.center.infrastructure.common.OperationRequest" resultMap="gatewayDistributionMap">
+        select id, group_id, gateway_id, system_id, system_name, create_time, update_time
+        from gateway_distribution
+        <where>
+            <if test="data != null and data.groupId != ''">
+                and group_id = #{data.groupId}
+            </if>
+            <if test="data != null and data.gatewayId != ''">
+                and gateway_id = #{data.gatewayId}
+            </if>
+        </where>
+        order by id desc limit #{pageStart}, #{pageEnd}
+    </select>
+
+    <select id="queryGatewayDistributionListCountByPage" parameterType="com.example.gateway.center.infrastructure.common.OperationRequest" resultType="java.lang.Integer">
+        select count(id) from gateway_distribution
+        <where>
+            <if test="data != null and data.groupId != ''">
+                and group_id = #{data.groupId}
+            </if>
+            <if test="data != null and data.gatewayId != ''">
+                and gateway_id = #{data.gatewayId}
+            </if>
+        </where>
+    </select>
+
+
 </mapper>
